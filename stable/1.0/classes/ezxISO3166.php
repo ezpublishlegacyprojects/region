@@ -5,9 +5,32 @@ class ezxISO3166
     function ezxISO3166( $address = null )
     {
         if ( !$address )
-    	   $this->address = $_SERVER['REMOTE_ADDR'];
+    	   $this->address = ezxISO3166::getRealIpAddr();
     	else
     	   $this->address = $address;
+    }
+    function defautCountryCode()
+    {
+        $regionini = eZINI::instance( 'region.ini' );
+        return strtoupper( $regionini->variable( 'Settings', 'DefaultCountryCode' ) );
+    }
+    function getRealIpAddr()
+    {
+        //check ip from share internet
+        if ( !empty( $_SERVER['HTTP_CLIENT_IP'] ) )
+        {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        }
+        //to check ip is pass from proxy
+        elseif ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) )
+        {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        else
+        {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
     }
     function getALLfromIP()
     {
@@ -140,6 +163,8 @@ class ezxISO3166
     {
     	$ip = new ezxISO3166();
         $code = $ip->getCCfromIP();
+        if( !$code )
+            $code = ezxISO3166::defautCountryCode();
         $countries = ezxISO3166::countries();
         if ( in_array( $code, $countries ) )
             return $code;

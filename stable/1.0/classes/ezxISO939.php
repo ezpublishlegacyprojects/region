@@ -581,7 +581,7 @@ class ezxISO936
     	
     }
     function convert( $lang )
-    {
+    {        
     	if( strlen( $lang ) == 2 )
     	{
     	    foreach ( $this->languages as $language )
@@ -632,7 +632,6 @@ function find_match($curlscore,$curcscore,$curgtlang,$langval,$charval,
         /* default to "everything is acceptable", as RFC2616 specifies */
         $acceptLang = ( ( $_SERVER["HTTP_ACCEPT_LANGUAGE"] == '' ) ? '*' : $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
         $alparts=@preg_split(   "/,/", $acceptLang  );
-        
         /* Parse the contents of the Accept-Language header.*/
         foreach( $alparts as $part )
         {
@@ -641,11 +640,27 @@ function find_match($curlscore,$curcscore,$curgtlang,$langval,$charval,
             {
                 $lang=@preg_split("/;/",$part);
                 $score=@preg_split("/=/",$lang[1]);
-                $alscores[$iso->convert( $lang[0] )]=$score[1];
+                if( strpos( $lang[0], '-' ) !== false )
+                {
+                    list( $lang[0], $langalternate ) = split( '-', $lang[0] );
+                }
+                $convert = $iso->convert( $lang[0] );
+                if ( !array_key_exists( $convert, $alscores ) )
+                {
+                    $alscores[$convert]=$score[1];
+                }
             }
             else
             {
-                $alscores[$iso->convert( $part )]=1;
+                if( strpos( $part, '-' ) !== false )
+                {
+                    list( $part, $langalternate ) = split( '-', $part );
+                }
+                $convert = $iso->convert( $part );
+                if ( !array_key_exists( $convert, $alscores ) )
+                {
+                    $alscores[$convert]=1;
+                }
             }
         }
         return $alscores;
