@@ -53,7 +53,7 @@ class ezxISO3166
     	$list = split( '[_-]',  $accessname, 2 );
     	return $list[0];
     }
-    function getPrimaryLocales( $Code = null, $exceptCurrent = true )
+    static function getPrimaryLocales( $Code = null, $exceptCurrent = true )
     {
         $regionini = eZINI::instance( 'region.ini' );
         $list = split( '[_-]',  $Code, 2 );
@@ -98,7 +98,7 @@ class ezxISO3166
         }
         return $locales;
     }
-    function getLanguagesFromLocalCode( $Code, $exceptCurrent = true )
+    static function getLanguagesFromLocalCode( $Code, $exceptCurrent = true )
     {
         $list = split( '[_-]',  $Code, 2 );
         $regionini = eZINI::instance( 'region.ini' );
