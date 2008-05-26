@@ -63,6 +63,11 @@ elseif ( $http->hasPostVariable( 'URL' ) and $http->postVariable( 'URL' ) )
 else
     $url = false;
 
+if ( $redirect === false and $settings['AutomaticRedirect'] == 'enabled' )
+{
+    $redirect = true;
+}
+
 $found = false;
 
 include_once( 'kernel/classes/ezsiteaccess.php');
@@ -110,7 +115,7 @@ if ( !$selection )
         }
     }
 }
-
+eZDebug::writeDebug( $selection ,'Selection');
 if ( $selection and $redirect )
 {
     if ( $regionini->hasVariable( $selection, "Country" ) )
@@ -162,7 +167,7 @@ if ( $selection and $redirect )
             if( !$url )
                 $url='/';
             $Result['rerun_uri'] = $url;
-            return $module->setExitStatus( EZ_MODULE_STATUS_RERUN );
+            return $module->setExitStatus( eZModule::STATUS_RERUN );
         }
     }
 }
