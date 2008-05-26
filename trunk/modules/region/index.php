@@ -152,8 +152,20 @@ if ( $selection and $redirect )
         {
             if ( $found )
                 $accesspath= '/' . $access['name'];
+                
+            // @TODO we might need language options to properly fetch the correct url.
+            $node = eZContentObjectTreeNode::fetch( $contentini->variable( 'NodeSettings', 'RootNode') );
+            if( is_object( $node ) )
+            {
+                $alias = '/' . $node->attribute( 'url_alias' );
+            }
+            else
+            {
+            	$alias = "/content/view/full/" . $contentini->variable( 'NodeSettings', 'RootNode');
+            }
+
             if ( $access and !$url )
-                return eZHTTPTool::redirect( $accesspath . "/content/view/full/" . $contentini->variable( 'NodeSettings', 'RootNode') );
+                return eZHTTPTool::redirect( $accesspath . $alias );
             else
             {
                 if ( strpos( $url, '/' ) === 0 )
