@@ -86,7 +86,7 @@ class ezxISO3166
         foreach ( $regions as $key => $region )
         {
             $list2 = split( '[_-]',  $key, 2 );
-            if ( !isset( $locales[$list2[1]] )  )
+            if ( array_key_exists( 1 , $list2 ) and !isset( $locales[$list2[1]] ) )
             {
                 /* TODO $exceptCurrent
                 if ( $exceptCurrent and ( $Code != $region['Siteaccess'] ) )
