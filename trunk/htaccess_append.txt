@@ -30,5 +30,5 @@ RewriteCond %{HTTP_COOKIE} !.*eZSESSID=.*
 RewriteCond %{REQUEST_URI} !.*region/index.*
 RewriteCond %{REQUEST_URI} !^/index.php*
 RewriteCond %{REQUEST_URI} !^/(var|extension|design|share|site|[a-zA-Z_]*admin)/.*
-RewriteRule ^([a-z]+\_[A-Z]+/?|[a-z]+/?|)(.*) http://%{HTTP_HOST}:%{SERVER_PORT}/$1region/index/$1?URL=$2&%{HTTP_COOKIE} [R,L]
+RewriteRule ^([a-z]+\_[A-Z]+/?|[a-z]+/?|)(.*) http://%{HTTP_HOST}:%{SERVER_PORT}/$1region/index/$1?URL=$2 [R,L]
 
