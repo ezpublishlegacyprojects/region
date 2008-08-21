@@ -6,7 +6,7 @@
 <form action={"/region/index/"|ezurl} method="post">
 <div class="element">
 <label class="no-break" for="region">{'Please select your region and language'|i18n( 'region/index' )}</label>
-<div>
+</div>
 <div class="element">
 									<select id="region" name="region" size="1">
 									{if $preferred_regions}
