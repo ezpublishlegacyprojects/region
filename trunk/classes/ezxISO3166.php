@@ -9,12 +9,7 @@ class ezxISO3166
     	else
     	   $this->address = $address;
     }
-    static function defautCountryCode()
-    {
-        $regionini = eZINI::instance( 'region.ini' );
-        return strtoupper( $regionini->variable( 'Settings', 'DefaultCountryCode' ) );
-    }
-    function getRealIpAddr()
+    static function getRealIpAddr()
     {
         //check ip from share internet
         if ( !empty( $_SERVER['HTTP_CLIENT_IP'] ) )
@@ -31,6 +26,11 @@ class ezxISO3166
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         return $ip;
+    }
+    static function defautCountryCode()
+    {
+        $regionini = eZINI::instance( 'region.ini' );
+        return strtoupper( $regionini->variable( 'Settings', 'DefaultCountryCode' ) );
     }
     function getALLfromIP()
     {

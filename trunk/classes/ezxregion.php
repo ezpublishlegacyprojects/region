@@ -1,7 +1,6 @@
 <?
 class ezxRegion
 {
-
     /**
      * Returns Region information for the current user/ip...
      *

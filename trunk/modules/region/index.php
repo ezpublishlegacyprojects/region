@@ -1,11 +1,7 @@
 <?php
-include_once( 'kernel/shop/classes/ezshopfunctions.php' );
+
 include_once( 'kernel/common/template.php' );
-include_once( 'kernel/classes/ezredirectmanager.php' );
-include_once( 'kernel/classes/ezcontentobjecttreenode.php' );
-include_once( eZExtension::baseDirectory() . '/' . nameFromPath( __FILE__ ) . '/classes/ezxISO3166.php' );
-include_once( eZExtension::baseDirectory() . '/' . nameFromPath( __FILE__ ) . '/classes/ezxISO939.php' );
-include_once( eZExtension::baseDirectory() . '/' . nameFromPath( __FILE__ ) . '/classes/ezxregion.php' );
+
 $module =& $Params['Module'];
 $http = eZHTTPTool::instance();
 
@@ -22,7 +18,7 @@ $Result['content'] = '';
 $LayoutStyle = 'index';
 $layoutINI = eZINI::instance( 'layout.ini' );
 $regiondata = ezxRegion::getRegionData();
-
+eZDebug::writeDebug( ezxISO3166::getRealIpAddr(), 'REMOTE IP ADDRESS' );
 $redirect = true;
 if ( $Params['siteaccess'] == 'select' )
 {
