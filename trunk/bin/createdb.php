@@ -66,7 +66,7 @@ $db->query( "INSERT INTO ezx_i2c_ip SELECT start,end,ci FROM ip2country NATURAL 
 $db->query( "DROP TABLE IF EXISTS ip2country" );
 #$db->commit();
 $cli->output( "Done." );
-
+$cli->output( "Dump results with mysqldump --add-drop-table databasename ezx_i2c_cc ezx_i2c_ip > region.sql" );
 $script->shutdown();
 
 ?>
