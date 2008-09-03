@@ -74,7 +74,7 @@ class ezxISO3166
         }
         foreach ( explode( ",", $_SERVER["HTTP_X_FORWARDED_FOR"] ) as $ip )
         {
-            if ( validip( trim( $ip ) ) )
+            if ( ezxISO3166::validip( trim( $ip ) ) )
             {
                 return $ip;
             }
