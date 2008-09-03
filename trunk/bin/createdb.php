@@ -2,23 +2,23 @@
 require 'autoload.php';
 
 $cli = eZCLI::instance();
-$script = eZScript::instance( array( 'debug-message' => '',
-                                      'use-session' => true,
-                                      'use-modules' => true,
-                                      'use-extensions' => true ) );
+$script = eZScript::instance( array( 
+    'debug-message' => '' , 
+    'use-session' => true , 
+    'use-modules' => true , 
+    'use-extensions' => true 
+) );
 $script->startup();
-$options = $script->getOptions( "",
-                                "",
-                                array(  ) );
+$options = $script->getOptions( "", "", array() );
 $script->initialize();
 
 $db = eZDB::instance();
 #$db->begin();
 
 
-        $db->query( "DROP TABLE IF EXISTS ip2country" );
+$db->query( "DROP TABLE IF EXISTS ip2country" );
 
-        $db->query( "CREATE TABLE ip2country (
+$db->query( "CREATE TABLE ip2country (
   start_ip CHAR(15) NOT NULL,
   end_ip CHAR(15) NOT NULL,
   start INT UNSIGNED NOT NULL,
@@ -26,6 +26,29 @@ $db = eZDB::instance();
   cc CHAR(2) NOT NULL,
   cn VARCHAR(50) NOT NULL
 )" );
+
+$row = 1;
+$handle = fopen( "extension/region/GeoIPCountryWhois.csv", "r" );
+while ( ( $data = fgetcsv( $handle, 0, ",", '"' ) ) !== false )
+{
+    $query = "INSERT INTO ip2country ( start_ip, end_ip, start, end, cc,cn ) VALUES ( '" . $db->escapeString( $data[0] ) . "', '" . $db->escapeString( $data[1] ) . "' ,'" . $db->escapeString( $data[2] ) . "', '" . $db->escapeString( $data[3] ) . "' , '" . $db->escapeString( $data[4] ) . "', '" . $db->escapeString( $data[5] ) . "' );";
+    
+    if ( $row >= 540000 )
+    {
+        echo $query . ";";
+    }
+    $result = $db->query( $query );
+    if ( $result == false )
+    {
+        echo "FAILD: " . $query;
+    }
+    if ( $row % 1000 == 0 )
+    {
+        echo $row . " records inserted\n";
+    }
+    $row ++;
+}
+fclose( $handle );
 $db->query( "DROP TABLE IF EXISTS ezx_i2c_cc" );
 $db->query( "CREATE TABLE ezx_i2c_cc (
   ci TINYINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -38,39 +61,12 @@ $db->query( "CREATE TABLE ezx_i2c_ip (
   end INT UNSIGNED NOT NULL,
   ci TINYINT UNSIGNED NOT NULL
 );" );
-
-$row = 1;
-$handle = fopen( "extension/region/GeoIPCountryWhois.csv", "r" );
-while ( ( $data = fgetcsv( $handle, 0, ",", '"' ) ) !== false )
-{
-	$query = "INSERT INTO ip2country ( start_ip, end_ip, start, end, cc,cn ) VALUES ( '".$db->escapeString($data[0])."', '".$db->escapeString($data[1])."' ,'".$db->escapeString($data[2])."', '".$db->escapeString($data[3])."' , '".$db->escapeString($data[4])."', '".$db->escapeString($data[5])."' );";
-	
-	if ( $row >= 540000 )
-	{
-		echo $query.";";
-	}
-	$result = $db->query( $query );   
-	if ( $result == false )
-	{
-		echo "FAILD: " . $query;
-	}
-    if ( $row % 1000 == 0 )
-    {
-        echo $row . " records inserted\n";
-    }
-    $row++;
-}
-fclose($handle);
-#$db->query( "TRUNCATE ezx_i2c_cc" );
 $db->query( "INSERT INTO ezx_i2c_cc SELECT DISTINCT NULL,cc,cn FROM ip2country;" );
-#$db->query( "TRUNCATE ezx_i2c_ip" );
 $db->query( "INSERT INTO ezx_i2c_ip SELECT start,end,ci FROM ip2country NATURAL JOIN ezx_i2c_cc;" );
 $db->query( "DROP TABLE IF EXISTS ip2country" );
 #$db->commit();
-$cli->output("Done.");
+$cli->output( "Done." );
 
 $script->shutdown();
-#$ip2c = new ip2country();
-#echo $ip2c->getCOUNTRYfromIP();
 
 ?>

@@ -12,7 +12,7 @@ class ezxISO3166
             $this->address = $address;
     }
 
-    function validip( $ip )
+    static function validip( $ip )
     {
         if ( ! empty( $ip ) && ip2long( $ip ) != - 1 )
         {
@@ -66,12 +66,14 @@ class ezxISO3166
         }
     }
 
-    function getRealIpAddr()
+    static function getRealIpAddr()
     {
-        if ( ezxISO3166::validip( $_SERVER["HTTP_CLIENT_IP"] ) )
+        if ( array_key_exists( "HTTP_CLIENT_IP", $_SERVER ) and ezxISO3166::validip( $_SERVER["HTTP_CLIENT_IP"] ) )
         {
             return $_SERVER["HTTP_CLIENT_IP"];
         }
+        if( array_key_exists( "HTTP_X_FORWARDED_FOR", $_SERVER ) )
+        {
         foreach ( explode( ",", $_SERVER["HTTP_X_FORWARDED_FOR"] ) as $ip )
         {
             if ( ezxISO3166::validip( trim( $ip ) ) )
@@ -79,19 +81,20 @@ class ezxISO3166
                 return $ip;
             }
         }
-        if ( ezxISO3166::validip( $_SERVER["HTTP_X_FORWARDED"] ) )
+        }
+        if ( array_key_exists( "HTTP_X_FORWARDED", $_SERVER ) and ezxISO3166::validip( $_SERVER["HTTP_X_FORWARDED"] ) )
         {
             return $_SERVER["HTTP_X_FORWARDED"];
         }
-        elseif ( ezxISO3166::validip( $_SERVER["HTTP_FORWARDED_FOR"] ) )
+        elseif ( array_key_exists( "HTTP_FORWARDED_FOR", $_SERVER ) and ezxISO3166::validip( $_SERVER["HTTP_FORWARDED_FOR"] ) )
         {
             return $_SERVER["HTTP_FORWARDED_FOR"];
         }
-        elseif ( ezxISO3166::validip( $_SERVER["HTTP_FORWARDED"] ) )
+        elseif ( array_key_exists( "HTTP_FORWARDED", $_SERVER ) and ezxISO3166::validip( $_SERVER["HTTP_FORWARDED"] ) )
         {
             return $_SERVER["HTTP_FORWARDED"];
         }
-        elseif ( ezxISO3166::validip( $_SERVER["HTTP_X_FORWARDED"] ) )
+        elseif ( array_key_exists( "HTTP_X_FORWARDED", $_SERVER ) and ezxISO3166::validip( $_SERVER["HTTP_X_FORWARDED"] ) )
         {
             return $_SERVER["HTTP_X_FORWARDED"];
         }
