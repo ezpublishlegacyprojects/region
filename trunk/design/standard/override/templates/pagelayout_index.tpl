@@ -10,5 +10,6 @@
 <div id="allcontent">
 {$module_result.content}
 </div>{* id="allcontent" *}
+<div id="debug"><!--DEBUG_REPORT--></div>
 </body>
 </html>
