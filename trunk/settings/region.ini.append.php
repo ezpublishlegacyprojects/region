@@ -1,6 +1,7 @@
 [Settings]
 UseCookie=disabled
 AutomaticRedirect=disabled
+SetCurrencyabled
 #If the Country Code is not in the IP database use this default code
 #format is ISO3166-alpha2, e.g. us, gb or de
 DefaultCountryCode=gb
