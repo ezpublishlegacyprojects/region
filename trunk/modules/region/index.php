@@ -124,7 +124,7 @@ if ( $selection and $redirect )
     {
         eZShopFunctions::setPreferredUserCountry( $country );
     }
-    if ( $preferredCurrency and eZINI::instance( 'region.ini' )->variae( ' 'Settings', 'SetCurrency' ) == 'enabled' )
+    if ( $preferredCurrency and eZINI::instance( 'region.ini' )->variable( 'Settings', 'SetCurrency' ) == 'enabled' )
     {
 	eZDebug::writeDebug( $preferredCurrency, "region currency");
         eZShopFunctions::setPreferredCurrencyCode( $preferredCurrency );
