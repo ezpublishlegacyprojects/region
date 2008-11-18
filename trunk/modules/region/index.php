@@ -17,9 +17,22 @@ $Result['content'] = '';
 
 $LayoutStyle = 'index';
 $layoutINI = eZINI::instance( 'layout.ini' );
-$regiondata = ezxRegion::getRegionData();
-eZDebug::writeDebug( ezxISO3166::getRealIpAddr(), 'REMOTE IP ADDRESS' );
+if ( array_key_exists( 'TESTIP', $_GET ) and ezxISO3166::validip( $_GET['TESTIP'] ) )
+{
+	$regiondata = ezxRegion::getRegionData( $_GET['TESTIP'] );
+	eZDebug::writeDebug( $_GET['TESTIP'], 'TEST IP ADDRESS' );
+	eZDebug::writeDebug( $regiondata, 'TEST REGIONAL DATA' );
+}
+else
+{
+	$regiondata = ezxRegion::getRegionData( '121.245.170.194' );
+	eZDebug::writeDebug( ezxISO3166::getRealIpAddr(), 'REMOTE IP ADDRESS' );
+}
+
 $redirect = true;
+
+eZDebug::writeDebug( 'Begining');
+
 if ( $Params['siteaccess'] == 'select' )
 {
     $selection = false;
@@ -58,6 +71,7 @@ elseif ( $http->hasPostVariable( 'URL' ) and $http->postVariable( 'URL' ) )
 }
 else
     $url = false;
+eZDebug::writeDebug( $url ,'url');
 
 if ( $redirect === false and $settings['AutomaticRedirect'] == 'enabled' )
 {
@@ -111,7 +125,9 @@ if ( !$selection )
         }
     }
 }
+
 eZDebug::writeDebug( $selection ,'Selection');
+
 if ( $selection and $redirect )
 {
     if ( $regionini->hasVariable( $selection, "Country" ) )

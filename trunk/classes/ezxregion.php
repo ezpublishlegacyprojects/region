@@ -6,12 +6,13 @@ class ezxRegion
      *
      * @return array Returns an array with keys
      */
-    static function getRegionData()
+    static function getRegionData( $address = null )
     {
+    	eZDebug::writeDebug( 'Starting...', 'ezxRegion::getRegionData()' );
         $regionini = eZINI::instance( 'region.ini' );
         $regions = $regionini->groups();
         unset( $regions['Settings'] );
-        $ccode = ezxISO3166::preferredCountry();
+        $ccode = ezxISO3166::preferredCountry( $address );
         $lcode = ezxISO936::preferredLanguages();
         $regions_keys = array_keys( $regions );
         $preferred_regions = array( 

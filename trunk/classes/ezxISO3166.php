@@ -246,9 +246,9 @@ class ezxISO3166
         return $counties;
     }
 
-    static function preferredCountry()
+    static function preferredCountry( $address = null )
     {
-        $ip = new ezxISO3166( );
+        $ip = new ezxISO3166( $address );
         $code = $ip->getCCfromIP();
         
         if ( ! $code )
