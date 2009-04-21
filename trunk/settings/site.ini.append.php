@@ -1,5 +1,5 @@
 [ContentSettings]
-CachedViewPreferences[full]=user_preferred_currency='';user_preferred_country='';
+#CachedViewPreferences[full]=user_preferred_currency='';user_preferred_country='';
 
 [RoleSettings]
 PolicyOmitList[]=region/index
