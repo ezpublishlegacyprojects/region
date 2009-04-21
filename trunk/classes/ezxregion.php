@@ -10,7 +10,10 @@ class ezxRegion
      */
     static function load( $ignore_list = array(), $SessionName = 'eZSESSID' )
     {
-
+        if ( eZSys::isShellExecution() )
+        {
+            return;
+        }
         if ( self::isBot() )
         {
             return;
