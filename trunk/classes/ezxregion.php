@@ -23,12 +23,13 @@ class ezxRegion
         {
             return;
         }
+
         $urlCfg = new ezcUrlConfiguration( );
         #$urlCfg->basedir = 'mydir';
         $urlCfg->script = 'index.php';
         $url = new ezcUrl( ezcUrlTools::getCurrentUrl(), $urlCfg );
         $params = $url->getParams();
-        if ( file_exists( 'settings/siteaccess/' . $params[0] ) )
+        if ( isset( $params[0] ) and file_exists( 'settings/siteaccess/' . $params[0] ) )
         {
             $siteaccess = $params[0];
         }
@@ -37,11 +38,11 @@ class ezxRegion
             $siteaccess = false;
         }
         
-        if ( ( $params[0] == 'region' and $params[1] == 'index' ) or ( $siteaccess and $params[1] == 'region' and $params[2] == 'index' ) )
+        if ( ( isset( $params[0] ) and $params[0] == 'region' and $params[1] == 'index' ) or ( $siteaccess and isset( $params[1] ) and $params[1] == 'region' and isset( $params[1] ) and $params[2] == 'index' ) )
         {
             return;
         }
-        if ( in_array( $params[0], $ignore_list ) )
+        if ( isset($params[0]) and in_array( $params[0], $ignore_list ) )
         {
             return;
         }
@@ -75,9 +76,9 @@ class ezxRegion
 
         $url->setQuery( $query );
         $url->params = $paramnew;
- 
-        eZHTTPTool::redirect( $url->buildUrl() );
-    
+
+	header('Location: ' . $url->buildUrl() );
+	exit();
     }
 
     static function isBot()
