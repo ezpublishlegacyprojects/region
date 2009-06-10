@@ -25,7 +25,8 @@ if ( array_key_exists( 'TESTIP', $_GET ) and ezxISO3166::validip( $_GET['TESTIP'
 }
 else
 {
-	$regiondata = ezxRegion::getRegionData( '121.245.170.194' );
+//	$regiondata = ezxRegion::getRegionData( '121.245.170.194' );
+	$regiondata = ezxRegion::getRegionData(  ezxISO3166::getRealIpAddr() );
 	eZDebug::writeDebug( ezxISO3166::getRealIpAddr(), 'REMOTE IP ADDRESS' );
 }
 
