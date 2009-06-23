@@ -7,13 +7,16 @@ The first parameter of ezxRegion::load will define an array of siteaccesses that
 NOTE: In earlier setup the work has been covert by mod_rewrite over .htacces (see htaccess_append.txt)
 
 <?php
-function RegionOnLoad( $className )
+if( php_sapi_name() != 'cli' )
 {
-    if ( !defined( 'EZP_ROUTER_EXECUTION' ) and class_exists( 'ezcUrl' )  )
+    function RegionOnLoad( $className )
     {
-        define( 'EZP_ROUTER_EXECUTION', true );
-        ezxRegion::load( array( 'ezwebin_site_admin' ) );
+        if ( !defined( 'EZP_ROUTER_EXECUTION' ) and class_exists( 'ezcUrl' )  )
+        {
+            define( 'EZP_ROUTER_EXECUTION', true );
+            ezxRegion::load( array( 'ezwebin_site_admin' ) );
+        }
     }
+    spl_autoload_register( 'RegionOnLoad' );
 }
-spl_autoload_register( 'RegionOnLoad' );
 ?>
