@@ -1,6 +1,4 @@
-<?
-include_once( eZExtension::baseDirectory() . '/' . nameFromPath( __FILE__ ) . '/classes/ezxISO3166.php' );
-include_once( eZExtension::baseDirectory() . '/' . nameFromPath( __FILE__ ) . '/classes/ezxISO939.php' );
+<?php
 
 class Region
 {
