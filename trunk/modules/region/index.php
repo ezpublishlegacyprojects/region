@@ -19,26 +19,26 @@ $LayoutStyle = 'index';
 $layoutINI = eZINI::instance( 'layout.ini' );
 if ( array_key_exists( 'TESTIP', $_GET ) and ezxISO3166::validip( $_GET['TESTIP'] ) )
 {
-	$regiondata = ezxRegion::getRegionData( $_GET['TESTIP'] );
-	eZDebug::writeDebug( $_GET['TESTIP'], 'TEST IP ADDRESS' );
-	eZDebug::writeDebug( $regiondata, 'TEST REGIONAL DATA' );
+    $regiondata = ezxRegion::getRegionData( $_GET['TESTIP'] );
+    eZDebug::writeDebug( $_GET['TESTIP'], 'TEST IP ADDRESS' );
+    eZDebug::writeDebug( $regiondata, 'TEST REGIONAL DATA' );
 }
 else
 {
-//	$regiondata = ezxRegion::getRegionData( '121.245.170.194' );
-	$regiondata = ezxRegion::getRegionData(  ezxISO3166::getRealIpAddr() );
-	eZDebug::writeDebug( ezxISO3166::getRealIpAddr(), 'REMOTE IP ADDRESS' );
+//  $regiondata = ezxRegion::getRegionData( '121.245.170.194' );
+    $regiondata = ezxRegion::getRegionData(  ezxISO3166::getRealIpAddr() );
+    eZDebug::writeDebug( ezxISO3166::getRealIpAddr(), 'REMOTE IP ADDRESS' );
 }
 
 $redirect = true;
 
-eZDebug::writeDebug( 'Begining');
+eZDebug::writeDebug( 'Starting', 'region extension' );
 
 if ( $Params['siteaccess'] == 'select' )
 {
     $selection = false;
 }
-elseif ( $Params['siteaccess'] ) 
+elseif ( $Params['siteaccess'] )
 {
     $selection = $Params['siteaccess'];
 }
@@ -60,7 +60,9 @@ elseif ( array_key_exists( 'preferred_region', $regiondata ) )
     $redirect = false;
 }
 else
+{
     $selection = false;
+}
 
 if ( $http->hasGetVariable( 'URL' ) and $http->getVariable( 'URL' ) )
 {
@@ -71,8 +73,11 @@ elseif ( $http->hasPostVariable( 'URL' ) and $http->postVariable( 'URL' ) )
     $url = $http->postVariable( 'URL' );
 }
 else
+{
     $url = false;
-eZDebug::writeDebug( $url ,'url');
+}
+
+eZDebug::writeDebug( $url, 'url');
 
 if ( $redirect === false and $settings['AutomaticRedirect'] == 'enabled' )
 {
@@ -81,7 +86,7 @@ if ( $redirect === false and $settings['AutomaticRedirect'] == 'enabled' )
 
 $found = false;
 
-include_once( 'kernel/classes/ezsiteaccess.php');
+#include_once( 'kernel/classes/ezsiteaccess.php');
 $oldaccess = $GLOBALS['eZCurrentAccess'];
 $accesslist = eZSiteAccess::siteAccessList();
 if ( $selection )
@@ -115,24 +120,26 @@ if ( !$selection )
 {
     foreach( $accesslist as $access )
     {
-    if (  $access['name'] and $access['name'] == $url and !$selection )
-    {
-        $url = false;
-        $access = changeAccess( $access );
-        $GLOBALS['eZCurrentAccess'] =& $access;
-        $found = true;
-        $selection = $access['name'];
+        if (  $access['name'] and $access['name'] == $url and !$selection )
+        {
+            $url = false;
+            $access = changeAccess( $access );
+            $GLOBALS['eZCurrentAccess'] =& $access;
+            $found = true;
+            $selection = $access['name'];
             break;
         }
     }
 }
 
-eZDebug::writeDebug( $selection ,'Selection');
+eZDebug::writeDebug( $selection, 'selection');
 
 if ( $selection and $redirect )
 {
     if ( $regionini->hasVariable( $selection, "Country" ) )
+    {
         $country = $regionini->variable( $selection, "Country" );
+    }
     if ( $regionini->hasVariable( $selection, "Currency" ) )
     {
         $preferredCurrency = $regionini->variable( $selection, "Currency" );
@@ -141,9 +148,9 @@ if ( $selection and $redirect )
     {
         eZShopFunctions::setPreferredUserCountry( $country );
     }
-    if ( $preferredCurrency and eZINI::instance( 'region.ini' )->variable( 'Settings', 'SetCurrency' ) == 'enabled' )
+    if ( $preferredCurrency and $regionini->variable( 'Settings', 'SetCurrency' ) == 'enabled' )
     {
-	eZDebug::writeDebug( $preferredCurrency, "region currency");
+        eZDebug::writeDebug( $preferredCurrency, "region currency");
         eZShopFunctions::setPreferredCurrencyCode( $preferredCurrency );
     }
     if ( $_GET["URI"] )
@@ -169,8 +176,10 @@ if ( $selection and $redirect )
         if ( ( $found and $oldaccess['name'] != $access['name'] ) or ( $found and !$url ) )
         {
             if ( $found )
-                $accesspath= '/' . $access['name'];
-                
+            {
+                $accesspath = '/' . $access['name'];
+            }
+
             // @TODO we might need language options to properly fetch the correct url.
             $node = eZContentObjectTreeNode::fetch( $contentini->variable( 'NodeSettings', 'RootNode') );
             if( is_object( $node ) )
@@ -179,23 +188,31 @@ if ( $selection and $redirect )
             }
             else
             {
-            	$alias = "/content/view/full/" . $contentini->variable( 'NodeSettings', 'RootNode');
+                $alias = "/content/view/full/" . $contentini->variable( 'NodeSettings', 'RootNode');
             }
 
             if ( $access and !$url )
+            {
                 return eZHTTPTool::redirect( $accesspath . $alias );
+            }
             else
             {
                 if ( strpos( $url, '/' ) === 0 )
+                {
                     return eZHTTPTool::redirect( $accesspath . $url );
+                }
                 else
+                {
                     return eZHTTPTool::redirect( $accesspath . '/' . $url );
+                }
             }
         }
         else
         {
             if( !$url )
+            {
                 $url='/';
+            }
             $Result['rerun_uri'] = $url;
             return $module->setExitStatus( eZModule::STATUS_RERUN );
         }
@@ -203,16 +220,23 @@ if ( $selection and $redirect )
 }
 
 if ( $layoutINI->hasVariable( $LayoutStyle, 'PageLayout' ) )
+{
     $Result['pagelayout'] = $layoutINI->variable( $LayoutStyle, 'PageLayout' );
+}
 else
+{
     $Result['pagelayout'] = 'pagelayout.tpl';
+}
 
 if ( strpos( $url, 'region/index' ) !== false )
 {
     $tpl->setVariable( 'nocookie', 1 );
 }
 else
+{
     $tpl->setVariable( 'nocookie', 0 );
+}
+
 $tpl->setVariable('URL', $url );
 
 $tpl->setVariable('preferred_region', $regiondata['preferred_region'] );
@@ -222,7 +246,9 @@ $tpl->setVariable('regions', $regions );
 $Result['content'] = $tpl->fetch( "design:region/index.tpl" );
 $node = eZContentObjectTreeNode::fetch( $contentini->variable( 'NodeSettings', 'RootNode') );
 if ( $node )
+{
     $Result['path'] = array( array( 'url' => false,
-                        'text' => $node->attribute( 'name' ) . ' - Region Selector' ) );
+                                    'text' => $node->attribute( 'name' ) . ' - region selector' ) );
+}
 
 ?>
