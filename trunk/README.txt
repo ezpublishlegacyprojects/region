@@ -40,10 +40,10 @@ if( php_sapi_name() != 'cli' )
 {
     function RegionOnLoad( $className )
     {
-        if ( !defined( 'EZP_ROUTER_EXECUTION' ) and class_exists( 'ezcUrl' )  )
+        if ( class_exists( 'ezcUrl' )  )
         {
-            define( 'EZP_ROUTER_EXECUTION', true );
             ezxRegion::load( array( 'ezwebin_site_admin' ) );
+		    spl_autoload_unregister( 'RegionOnLoad' );
         }
     }
     spl_autoload_register( 'RegionOnLoad' );
