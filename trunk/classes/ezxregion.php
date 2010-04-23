@@ -18,12 +18,23 @@ class ezxRegion
         {
             return;
         }
-        
-        if ( array_key_exists( $SessionName, $_COOKIE ) )
+        if ( is_array( $SessionName ) )
         {
-            return;
+            foreach( $SessionName as $name )
+            {
+                if ( array_key_exists( $name, $_COOKIE ) )
+                {
+                    return;
+                }    
+            }
         }
-
+	else
+	{
+            if ( array_key_exists( $SessionName, $_COOKIE ) )
+            {
+                return;
+            }
+	}
         $urlCfg = new ezcUrlConfiguration( );
         #$urlCfg->basedir = 'mydir';
         $urlCfg->script = 'index.php';
@@ -32,6 +43,10 @@ class ezxRegion
         if ( isset( $params[0] ) and file_exists( 'settings/siteaccess/' . $params[0] ) )
         {
             $siteaccess = $params[0];
+            if ( array_key_exists( 'EZREGION', $_COOKIE ) and $_COOKIE['EZREGION'] === $siteaccess  )
+            {
+                 return;
+            }
         }
         else
         {
@@ -73,10 +88,11 @@ class ezxRegion
         {
             $query['URL'] = join( '/', $params );
         }
+        setcookie("COOKIETEST", 1, time()+3600*24*365 , '/' );
+        $query['COOKIETEST'] = 1;
 
         $url->setQuery( $query );
         $url->params = $paramnew;
-
 	header('Location: ' . $url->buildUrl() );
 	exit();
     }

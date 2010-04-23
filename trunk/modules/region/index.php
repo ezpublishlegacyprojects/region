@@ -30,6 +30,13 @@ else
     eZDebug::writeDebug( ezxISO3166::getRealIpAddr(), 'REMOTE IP ADDRESS' );
 }
 
+$cookietest = true;
+if ( array_key_exists( 'COOKIETEST', $_GET ) and !array_key_exists( 'COOKIETEST', $_COOKIE ) )
+{
+    $cookietest = false;
+}
+setcookie( "COOKIETEST", 1, time() - 3600*24*365 , '/' );
+
 $redirect = true;
 
 eZDebug::writeDebug( 'Starting', 'region extension' );
@@ -41,13 +48,11 @@ if ( $Params['siteaccess'] == 'select' )
 elseif ( $Params['siteaccess'] )
 {
     $selection = $Params['siteaccess'];
+    setcookie("EZREGION", $Params['siteaccess'], time()+3600*24*365 , '/' );
 }
 elseif ( $http->hasPostVariable( 'region' ) )
 {
-    if ( $settings['UseCookie'] == 'enabled' )
-    {
-        setcookie("EZREGION", $http->postVariable( 'region' ), time()+3600*24*365 , '/' );
-    }
+    setcookie("EZREGION", $http->postVariable( 'region' ), time()+3600*24*365 , '/' );
     $selection = $http->postVariable( 'region' );
 }
 elseif ( array_key_exists( 'EZREGION', $_COOKIE ) )
@@ -86,7 +91,6 @@ if ( $redirect === false and $settings['AutomaticRedirect'] == 'enabled' )
 
 $found = false;
 
-#include_once( 'kernel/classes/ezsiteaccess.php');
 $oldaccess = $GLOBALS['eZCurrentAccess'];
 $accesslist = eZSiteAccess::siteAccessList();
 if ( $selection )
@@ -134,7 +138,7 @@ if ( !$selection )
 
 eZDebug::writeDebug( $selection, 'selection');
 
-if ( $selection and $redirect )
+if ( $selection and $redirect and $cookietest )
 {
     if ( $regionini->hasVariable( $selection, "Country" ) )
     {
@@ -209,12 +213,19 @@ if ( $selection and $redirect )
         }
         else
         {
-            if( !$url )
+            if ( array_key_exists( 'name', $access ) )
             {
-                $url='/';
+                $accesspath = '/' . $access['name'];
             }
-            $Result['rerun_uri'] = $url;
-            return $module->setExitStatus( eZModule::STATUS_RERUN );
+
+                if ( strpos( $url, '/' ) === 0 )
+                {
+                    return eZHTTPTool::redirect( $accesspath . $url );
+                }
+                else
+                {
+                    return eZHTTPTool::redirect( $accesspath . '/' . $url );
+                }            
         }
     }
 }
@@ -228,7 +239,7 @@ else
     $Result['pagelayout'] = 'pagelayout.tpl';
 }
 
-if ( strpos( $url, 'region/index' ) !== false )
+if ( $cookietest === false )
 {
     $tpl->setVariable( 'nocookie', 1 );
 }

@@ -1,5 +1,4 @@
 [Settings]
-UseCookie=disabled
 AutomaticRedirect=disabled
 SetCurrency=disabled
 #If the Country Code is not in the IP database use this default code
