@@ -1,5 +1,4 @@
 <?php
-
 include_once( 'kernel/common/template.php' );
 
 $module =& $Params['Module'];
@@ -93,7 +92,7 @@ $found = false;
 
 $oldaccess = $GLOBALS['eZCurrentAccess'];
 $accesslist = eZSiteAccess::siteAccessList();
-if ( $selection )
+if ( $selection !== false )
 {
     foreach( $accesslist as $access )
     {
@@ -120,11 +119,11 @@ if ( $selection )
         }
     }
 }
-if ( !$selection )
+else
 {
     foreach( $accesslist as $access )
     {
-        if (  $access['name'] and $access['name'] == $url and !$selection )
+        if (  $access['name'] and $access['name'] == $url )
         {
             $url = false;
             $access = changeAccess( $access );
@@ -165,6 +164,22 @@ if ( $selection and $redirect and $cookietest )
     {
         if ( !$found )
         {
+	    if ( !array_key_exists( $selection, $regions ) and array_key_exists( '*_*', $regions ) )
+	    {
+		            foreach( $accesslist as $access )
+            {
+                if ( $access['name'] == $regions['*_*']['Siteaccess'] )
+                {
+                    $access = changeAccess( $access );
+                    $GLOBALS['eZCurrentAccess'] =& $access;
+                    $found = true;
+                    break;
+                }
+            }
+		
+            }
+else
+{
             foreach( $accesslist as $access )
             {
                 if ( $access['name'] == $regions[$selection]['Siteaccess'] )
@@ -175,6 +190,7 @@ if ( $selection and $redirect and $cookietest )
                     break;
                 }
             }
+}      
         }
 
         if ( ( $found and $oldaccess['name'] != $access['name'] ) or ( $found and !$url ) )
