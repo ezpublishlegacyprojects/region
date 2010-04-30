@@ -8,7 +8,7 @@ class ezxRegion
      *
      * @return array Returns an array with keys
      */
-    static function load( $ignore_list = array(), $SessionName = 'eZSESSID' )
+    static function load( $ignore_list = array(), $SessionName = 'eZSESSID', $redirectRoot = false )
     {
         if ( eZSys::isShellExecution() )
         {
@@ -18,46 +18,70 @@ class ezxRegion
         {
             return;
         }
-        if ( is_array( $SessionName ) )
-        {
-            foreach( $SessionName as $name )
-            {
-                if ( array_key_exists( $name, $_COOKIE ) )
-                {
-                    return;
-                }    
-            }
-        }
-	else
-	{
-            if ( array_key_exists( $SessionName, $_COOKIE ) )
-            {
-                return;
-            }
-	}
+        
         $urlCfg = new ezcUrlConfiguration( );
         #$urlCfg->basedir = 'mydir';
         $urlCfg->script = 'index.php';
         $url = new ezcUrl( ezcUrlTools::getCurrentUrl(), $urlCfg );
         $params = $url->getParams();
-        if ( isset( $params[0] ) and file_exists( 'settings/siteaccess/' . $params[0] ) )
+        
+        if ( is_array( $SessionName ) )
         {
-            $siteaccess = $params[0];
-            if ( array_key_exists( 'EZREGION', $_COOKIE ) and $_COOKIE['EZREGION'] === $siteaccess  )
+            foreach ( $SessionName as $name )
             {
-                 return;
+                if ( array_key_exists( $name, $_COOKIE ) )
+                {
+                    if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and is_array( $params ) && count( $params ) == 0 and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
+                    {
+                        $redirectWithCookie = true;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
             }
         }
         else
         {
-            $siteaccess = false;
+            if ( array_key_exists( $SessionName, $_COOKIE ) )
+            {
+                if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and is_array( $params ) && count( $params ) == 0 and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
+                {
+                    $redirectWithCookie = true;
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+        
+        if ( isset( $params[0] ) and file_exists( 'settings/siteaccess/' . $params[0] ) )
+        {
+            $siteaccess = $params[0];
+            if ( array_key_exists( 'EZREGION', $_COOKIE ) and $_COOKIE['EZREGION'] === $siteaccess )
+            {
+                return;
+            }
+        }
+        else
+        {
+            if ( $redirectWithCookie )
+            {
+                $siteaccess = $_COOKIE['EZREGION'];
+            }
+            else
+            {
+                $siteaccess = false;
+            }
         }
         
         if ( ( isset( $params[0] ) and $params[0] == 'region' and $params[1] == 'index' ) or ( $siteaccess and isset( $params[1] ) and $params[1] == 'region' and isset( $params[1] ) and $params[2] == 'index' ) )
         {
             return;
         }
-        if ( isset($params[0]) and in_array( $params[0], $ignore_list ) )
+        if ( isset( $params[0] ) and in_array( $params[0], $ignore_list ) )
         {
             return;
         }
@@ -83,18 +107,29 @@ class ezxRegion
         {
             array_shift( $params );
         }
-
-        if( count( $params ) )
+        
+        if ( count( $params ) )
         {
             $query['URL'] = join( '/', $params );
         }
-        setcookie("COOKIETEST", 1, time()+3600*24*365 , '/' );
+        setcookie( "COOKIETEST", 1, time() + 3600 * 24 * 365, '/' );
         $query['COOKIETEST'] = 1;
-
+        
         $url->setQuery( $query );
         $url->params = $paramnew;
-	header('Location: ' . $url->buildUrl() );
-	exit();
+        header( 'Location: ' . $url->buildUrl() );
+        exit();
+    }
+
+    static function isSetCookie( $_COOKIE, $params, $redirectRoot )
+    {
+        $cookieObject = object;
+        if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) and is_array( $params ) && count( $params ) == 0 )
+        {
+            $cookieObject->siteaccess = $_COOKIE['EZREGION'];
+        }
+        
+        return $cookieObject;
     }
 
     static function isBot()
