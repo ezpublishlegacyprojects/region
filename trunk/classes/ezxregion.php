@@ -121,17 +121,6 @@ class ezxRegion
         exit();
     }
 
-    static function isSetCookie( $_COOKIE, $params, $redirectRoot )
-    {
-        $cookieObject = object;
-        if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) and is_array( $params ) && count( $params ) == 0 )
-        {
-            $cookieObject->siteaccess = $_COOKIE['EZREGION'];
-        }
-        
-        return $cookieObject;
-    }
-
     static function isBot()
     {
         $bot_list = array( 
