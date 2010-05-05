@@ -8,7 +8,7 @@ class ezxRegion
      *
      * @return array Returns an array with keys
      */
-    static function load( $ignore_list = array(), $SessionName = 'eZSESSID', $redirectRoot = false )
+    static function load( $ignore_list = array(), $SessionName, $redirectRoot = false )
     {
         if ( eZSys::isShellExecution() )
         {
@@ -24,12 +24,25 @@ class ezxRegion
         $urlCfg->script = 'index.php';
         $url = new ezcUrl( ezcUrlTools::getCurrentUrl(), $urlCfg );
         $params = $url->getParams();
-        
+	
+	if ( !is_array( $SessionName ) && $SessionName == '' )
+        {
+        	$SessionName = 'eZSESSID';
+        }
+	$foundSessionName = false;        
         if ( is_array( $SessionName ) )
         {
             foreach ( $SessionName as $name )
             {
-                if ( array_key_exists( $name, $_COOKIE ) )
+                foreach ( $_COOKIE as $cookieName => $cookieValue)
+                {
+                    if ( strpos( $cookieName, $SessionName ) !== false )
+                    {
+                        $foundSessionName = true;
+                    }
+                }
+
+                if ( $foundSessionName )
                 {
                     if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and is_array( $params ) && count( $params ) == 0 and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
                     {
@@ -44,7 +57,15 @@ class ezxRegion
         }
         else
         {
-            if ( array_key_exists( $SessionName, $_COOKIE ) )
+	    foreach ( $_COOKIE as $cookieName => $cookieValue)
+	    {
+		if ( strpos( $cookieName, $SessionName ) !== false )
+		{
+		    $foundSessionName = true;
+		}
+	    }
+	  
+      	    if ( $foundSessionName )
             {
                 if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and is_array( $params ) && count( $params ) == 0 and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
                 {
