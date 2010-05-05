@@ -26,9 +26,9 @@ class ezxRegion
         $params = $url->getParams();
 	
 	if ( !is_array( $SessionName ) && $SessionName == '' )
-        {
+    {
         	$SessionName = 'eZSESSID';
-        }
+    }
 	$foundSessionName = false;        
         if ( is_array( $SessionName ) )
         {
@@ -57,13 +57,13 @@ class ezxRegion
         }
         else
         {
-	    foreach ( $_COOKIE as $cookieName => $cookieValue)
-	    {
-		if ( strpos( $cookieName, $SessionName ) !== false )
-		{
-		    $foundSessionName = true;
-		}
-	    }
+			foreach ( $_COOKIE as $cookieName => $cookieValue)
+			{
+				if ( strpos( $cookieName, $SessionName ) !== false )
+				{
+					$foundSessionName = true;
+				}
+			}
 	  
       	    if ( $foundSessionName )
             {
