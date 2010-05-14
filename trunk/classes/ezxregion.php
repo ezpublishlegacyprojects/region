@@ -25,11 +25,11 @@ class ezxRegion
         $url = new ezcUrl( ezcUrlTools::getCurrentUrl(), $urlCfg );
         $params = $url->getParams();
 	
-	if ( !is_array( $SessionName ) && $SessionName == '' )
-    {
+		if ( !is_array( $SessionName ) && $SessionName == '' )
+		{
         	$SessionName = 'eZSESSID';
-    }
-	$foundSessionName = false;        
+		}
+		$foundSessionName = false;        
         if ( is_array( $SessionName ) )
         {
             foreach ( $SessionName as $name )
@@ -98,6 +98,10 @@ class ezxRegion
             }
         }
         
+		if ( isset( $params[0] ) and $params[0] == 'ezinfo' and isset( $params[1] ) and $params[1] == 'is_alive' )    
+        { 
+            return;
+        }
         if ( ( isset( $params[0] ) and $params[0] == 'region' and $params[1] == 'index' ) or ( $siteaccess and isset( $params[1] ) and $params[1] == 'region' and isset( $params[1] ) and $params[2] == 'index' ) )
         {
             return;
