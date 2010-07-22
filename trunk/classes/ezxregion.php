@@ -88,7 +88,7 @@ class ezxRegion
         }
         else
         {
-            if ( $redirectWithCookie )
+            if ( isset( $redirectWithCookie ) && $redirectWithCookie === true )
             {
                 $siteaccess = $_COOKIE['EZREGION'];
             }
@@ -143,7 +143,7 @@ class ezxRegion
         $url->setQuery( $query );
         $url->params = $paramnew;
         header( 'Location: ' . $url->buildUrl() );
-        exit();
+        eZExecution::cleanExit();
     }
 
     static function isBot()

@@ -1,6 +1,6 @@
 Region extension
 ===============================================================================
-Author: Björn Dieding, http://www.xrow.com
+Author: Bjï¿½rn Dieding, http://www.xrow.com
 
 The region extension redirects a user to a siteaccess based on his ip address.
 This can be done in the background (the ip address is checked in the database)
@@ -24,10 +24,6 @@ Setup
 - edit settings/region.ini
 - clear ini cache
 
-eZ Publish 4.0.x:
-Include the rewrite rules from htaccess_append.txt
-You need to exclude your admin siteaccess from rewriting
-
 From eZ Publish 4.1.x:
 Edit your config.php and add those lines of code. This will execute
 and request router after the ezc have been loaded.
@@ -40,10 +36,11 @@ if( php_sapi_name() != 'cli' )
 {
     function RegionOnLoad( $className )
     {
-        if ( class_exists( 'ezcUrl' )  )
+        if ( isset($GLOBALS['eZDBGlobalInstance']) && $GLOBALS['eZDBGlobalInstance'] instanceof eZDBInterface )
         {
-            ezxRegion::load( array( 'ezwebin_site_admin' ) );
-		    spl_autoload_unregister( 'RegionOnLoad' );
+            spl_autoload_unregister( 'RegionOnLoad' );
+            ezxRegion::load( array( 'eng_admin' ), 'eZSESSID', true );
+            return ezpAutoloader::autoload( $className );
         }
     }
     spl_autoload_register( 'RegionOnLoad' );
