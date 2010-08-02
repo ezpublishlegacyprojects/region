@@ -4,6 +4,8 @@ SetCurrency=disabled
 #If the Country Code is not in the IP database use this default code
 #format is ISO3166-alpha2, e.g. us, gb or de
 DefaultCountryCode=gb
+#Array of URLs to exclude from the region functionality
+#URLExcludes[]=ezwebin_site_admin
 
 #[ger_DE]
 #Name=Deutschland

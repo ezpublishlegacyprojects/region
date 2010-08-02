@@ -39,7 +39,7 @@ if( php_sapi_name() != 'cli' )
         if ( isset($GLOBALS['eZDBGlobalInstance']) && $GLOBALS['eZDBGlobalInstance'] instanceof eZDBInterface )
         {
             spl_autoload_unregister( 'RegionOnLoad' );
-            ezxRegion::load( array( 'eng_admin' ), 'eZSESSID', true );
+            ezxRegion::load( 'eZSESSID', true );
             return ezpAutoloader::autoload( $className );
         }
     }

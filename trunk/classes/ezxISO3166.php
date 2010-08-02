@@ -166,6 +166,7 @@ class ezxISO3166
         $list = split( '[_-]', $Code, 2 );
         $regionini = eZINI::instance( 'region.ini' );
         $regions = $regionini->groups();
+        unset( $regions['Settings'] );
         $locales = array();
         foreach ( $regions as $key => $region )
         {
@@ -211,6 +212,7 @@ class ezxISO3166
         $list = split( '[_-]', $Code, 2 );
         $regionini = eZINI::instance( 'region.ini' );
         $regions = $regionini->groups();
+        unset( $regions['Settings'] );
         $languages = array();
         foreach ( $regions as $key => $region )
         {
@@ -235,7 +237,7 @@ class ezxISO3166
     {
         $regionini = eZINI::instance( 'region.ini' );
         $regions = $regionini->groups();
-        
+        unset( $regions['Settings'] );
         $counties = array();
         foreach ( $regions as $key => $region )
         {

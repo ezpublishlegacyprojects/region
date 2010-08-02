@@ -33,9 +33,6 @@
  *
  */
 
-define( 'EZX_ISO936_1', 0 );
-define( 'EZX_ISO936_2', 1 );
-
 class ezxISO936
 {
     var $languages = array
@@ -576,10 +573,6 @@ class ezxISO936
     	array( array( '' ), array( 'zun' ) ),
     	
     );
-    function ezxISO936()
-    {
-    	
-    }
     function convert( $lang )
     {        
     	if( strlen( $lang ) == 2 )
@@ -615,7 +608,7 @@ function find_match($curlscore,$curcscore,$curgtlang,$langval,$charval,
     {
     	$regionini = eZINI::instance( 'region.ini' );
         $regions = $regionini->groups();
-
+        unset( $regions['Settings'] );
         $languages = array();
         foreach ( $regions as $key => $region )
         {

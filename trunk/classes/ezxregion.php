@@ -8,7 +8,7 @@ class ezxRegion
      *
      * @return array Returns an array with keys
      */
-    static function load( $ignore_list = array(), $SessionName, $redirectRoot = false )
+    static function load( $SessionName, $redirectRoot = false, $url_excludes = array() )
     {
         if ( eZSys::isShellExecution() )
         {
@@ -18,18 +18,30 @@ class ezxRegion
         {
             return;
         }
-        
         $urlCfg = new ezcUrlConfiguration( );
-        #$urlCfg->basedir = 'mydir';
         $urlCfg->script = 'index.php';
         $url = new ezcUrl( ezcUrlTools::getCurrentUrl(), $urlCfg );
         $params = $url->getParams();
-	
-		if ( !is_array( $SessionName ) && $SessionName == '' )
-		{
-        	$SessionName = 'eZSESSID';
-		}
-		$foundSessionName = false;        
+
+        $url_excludes = array_merge( $url_excludes, eZINI::instance( 'region.ini' )->variable( 'Settings', 'URLExcludes' ) );
+        # Checking for excluded URLs
+        $current_url = implode( '/', $params );
+        if ( count( $url_excludes ) > 0 )
+        {
+            foreach ( $url_excludes as $exclude )
+            {
+                if ( preg_match( '#^([^/]*/){0,1}' . $exclude . '#', $current_url ) )
+                {
+                     return;
+                }
+            }
+        }
+
+        if ( !is_array( $SessionName ) && $SessionName == '' )
+        {
+           $SessionName = 'eZSESSID';
+        }
+        $foundSessionName = false;        
         if ( is_array( $SessionName ) )
         {
             foreach ( $SessionName as $name )
@@ -103,10 +115,6 @@ class ezxRegion
             return;
         }
         if ( ( isset( $params[0] ) and $params[0] == 'region' and $params[1] == 'index' ) or ( $siteaccess and isset( $params[1] ) and $params[1] == 'region' and isset( $params[1] ) and $params[2] == 'index' ) )
-        {
-            return;
-        }
-        if ( isset( $params[0] ) and in_array( $params[0], $ignore_list ) )
         {
             return;
         }
