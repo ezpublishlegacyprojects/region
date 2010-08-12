@@ -35,7 +35,9 @@
 
 class ezxISO936
 {
-    var $languages = array
+    const ISO936_1 = 0;
+    const ISO936_2 = 1;
+    public $languages = array
     (
     #   array( array( 'ISO 639-1' ), array( 'ISO 639-2' ) ),
     # oder
@@ -612,30 +614,30 @@ function find_match($curlscore,$curcscore,$curgtlang,$langval,$charval,
         $languages = array();
         foreach ( $regions as $key => $region )
         {
-            $list = split( '[_-]',  $key, 2 );
+            $list = preg_split( '/[_-]/',  $key, 2 );
             if ( isset( $list[0] ) )
                 $languages[$list[0]] = $list[0];
         }
         return $languages;
     }
-    static function preferredLanguages( $format =  EZX_ISO936_2 )
+    static function preferredLanguages( $format =  self::ISO936_2 )
     {
         $iso = new ezxISO936();
         $alscores = array();
         /* default to "everything is acceptable", as RFC2616 specifies */
         $acceptLang = ( ( $_SERVER["HTTP_ACCEPT_LANGUAGE"] == '' ) ? '*' : $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-        $alparts=@preg_split(   "/,/", $acceptLang  );
+        $alparts = preg_split( "/,/", $acceptLang  );
         /* Parse the contents of the Accept-Language header.*/
         foreach( $alparts as $part )
         {
             $part=trim($part);
             if( preg_match( "/;/", $part ) )
             {
-                $lang=@preg_split("/;/",$part);
-                $score=@preg_split("/=/",$lang[1]);
+                $lang = preg_split("/;/",$part);
+                $score = preg_split("/=/",$lang[1]);
                 if( strpos( $lang[0], '-' ) !== false )
                 {
-                    list( $lang[0], $langalternate ) = split( '-', $lang[0] );
+                    list( $lang[0], $langalternate ) = preg_split( '/-/', $lang[0] );
                 }
                 $convert = $iso->convert( $lang[0] );
                 if ( !array_key_exists( $convert, $alscores ) )
@@ -647,7 +649,7 @@ function find_match($curlscore,$curcscore,$curgtlang,$langval,$charval,
             {
                 if( strpos( $part, '-' ) !== false )
                 {
-                    list( $part, $langalternate ) = split( '-', $part );
+                    list( $part, $langalternate ) = preg_split( '/-/', $part );
                 }
                 $convert = $iso->convert( $part );
                 if ( !array_key_exists( $convert, $alscores ) )
