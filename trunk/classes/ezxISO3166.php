@@ -156,24 +156,24 @@ class ezxISO3166
 
     function getCountryCodeFromAccess( $accessname )
     {
-        $list = split( '[_-]', $accessname, 2 );
+        $list = preg_split( '/[_-]/', $accessname, 2 );
         return $list[0];
     }
 
     static function getPrimaryLocales( $Code = null, $exceptCurrent = true )
     {
         $regionini = eZINI::instance( 'region.ini' );
-        $list = split( '[_-]', $Code, 2 );
+        $list = preg_split( '/[_-]/', $Code, 2 );
         $regionini = eZINI::instance( 'region.ini' );
         $regions = $regionini->groups();
         unset( $regions['Settings'] );
         $locales = array();
         foreach ( $regions as $key => $region )
         {
-            $list2 = split( '[_-]', $key, 2 );
+            $list2 = preg_split( '/[_-]/', $key, 2 );
             if ( array_key_exists( 1, $list2 ) and ! isset( $locales[$list2[1]] ) )
             {
-                /* TODO $exceptCurrent
+                /* @TODO $exceptCurrent
                 if ( $exceptCurrent and ( $Code != $region['Siteaccess'] ) )
                 {
 
@@ -209,14 +209,14 @@ class ezxISO3166
 
     static function getLanguagesFromLocalCode( $Code, $exceptCurrent = true )
     {
-        $list = split( '[_-]', $Code, 2 );
+        $list = preg_split( '/[_-]/', $Code, 2 );
         $regionini = eZINI::instance( 'region.ini' );
         $regions = $regionini->groups();
         unset( $regions['Settings'] );
         $languages = array();
         foreach ( $regions as $key => $region )
         {
-            $list2 = split( '[_-]', $key, 2 );
+            $list2 = preg_split( '/[_-]/', $key, 2 );
             if ( $list[1] == $list2[1] )
             {
                 if ( $exceptCurrent and ( $Code != $region['Siteaccess'] ) )
@@ -241,7 +241,7 @@ class ezxISO3166
         $counties = array();
         foreach ( $regions as $key => $region )
         {
-            $list = split( '[_-]', $key, 2 );
+            $list = preg_split( '/[_-]/', $key, 2 );
             if ( isset( $list[1] ) )
                 $counties[$list[1]] = $list[1];
         }
