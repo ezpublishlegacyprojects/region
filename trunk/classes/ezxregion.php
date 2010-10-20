@@ -18,11 +18,11 @@ class ezxRegion
         {
             return;
         }
-        $urlCfg = new ezcUrlConfiguration( );
+        $urlCfg = new ezcUrlConfiguration();
         $urlCfg->script = 'index.php';
         $url = new ezcUrl( ezcUrlTools::getCurrentUrl(), $urlCfg );
         $params = $url->getParams();
-
+        
         $url_excludes = array_merge( $url_excludes, eZINI::instance( 'region.ini' )->variable( 'Settings', 'URLExcludes' ) );
         # Checking for excluded URLs
         $current_url = implode( '/', $params );
@@ -32,31 +32,33 @@ class ezxRegion
             {
                 if ( preg_match( '#^([^/]*/){0,1}' . $exclude . '#', $current_url ) )
                 {
-                     return;
+                    return;
                 }
             }
         }
-
-        if ( !is_array( $SessionName ) && $SessionName == '' )
+        
+        if ( ! is_array( $SessionName ) && $SessionName == '' )
         {
-           $SessionName = 'eZSESSID';
+            $SessionName = 'eZSESSID';
         }
-        $foundSessionName = false;        
+        $foundSessionName = false;
         if ( is_array( $SessionName ) )
         {
             foreach ( $SessionName as $name )
             {
-                foreach ( $_COOKIE as $cookieName => $cookieValue)
+                foreach ( $_COOKIE as $cookieName => $cookieValue )
                 {
                     if ( strpos( $cookieName, $SessionName ) !== false )
                     {
                         $foundSessionName = true;
                     }
                 }
-
+                
                 if ( $foundSessionName )
                 {
-                    if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and is_array( $params ) && count( $params ) == 0 and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
+                    if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and 
+                         is_array( $params ) and count( $params ) == 0 and 
+                         file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
                     {
                         $redirectWithCookie = true;
                     }
@@ -69,17 +71,19 @@ class ezxRegion
         }
         else
         {
-			foreach ( $_COOKIE as $cookieName => $cookieValue)
-			{
-				if ( strpos( $cookieName, $SessionName ) !== false )
-				{
-					$foundSessionName = true;
-				}
-			}
-	  
-      	    if ( $foundSessionName )
+            foreach ( $_COOKIE as $cookieName => $cookieValue )
             {
-                if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and is_array( $params ) && count( $params ) == 0 and file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
+                if ( strpos( $cookieName, $SessionName ) !== false )
+                {
+                    $foundSessionName = true;
+                }
+            }
+            
+            if ( $foundSessionName )
+            {
+                if ( $redirectRoot and array_key_exists( 'EZREGION', $_COOKIE ) and 
+                     is_array( $params ) && count( $params ) == 0 and 
+                     file_exists( 'settings/siteaccess/' . $_COOKIE['EZREGION'] ) )
                 {
                     $redirectWithCookie = true;
                 }
@@ -93,7 +97,8 @@ class ezxRegion
         if ( isset( $params[0] ) and file_exists( 'settings/siteaccess/' . $params[0] ) )
         {
             $siteaccess = $params[0];
-            if ( array_key_exists( 'EZREGION', $_COOKIE ) and $_COOKIE['EZREGION'] === $siteaccess )
+            if ( array_key_exists( 'EZREGION', $_COOKIE ) and 
+                 $_COOKIE['EZREGION'] === $siteaccess )
             {
                 return;
             }
@@ -110,11 +115,15 @@ class ezxRegion
             }
         }
         
-		if ( isset( $params[0] ) and $params[0] == 'ezinfo' and isset( $params[1] ) and $params[1] == 'is_alive' )    
-        { 
+        if ( isset( $params[0] ) and $params[0] == 'ezinfo' and isset( $params[1] ) and $params[1] == 'is_alive' )
+        {
             return;
         }
-        if ( ( isset( $params[0] ) and $params[0] == 'region' and $params[1] == 'index' ) or ( $siteaccess and isset( $params[1] ) and $params[1] == 'region' and isset( $params[1] ) and $params[2] == 'index' ) )
+        if ( ( isset( $params[0] ) and 
+               $params[0] == 'region' and $params[1] == 'index' ) or 
+	           ( $siteaccess and isset( $params[1] ) and 
+	             $params[1] == 'region' and isset( $params[1] ) and 
+	             $params[2] == 'index' ) )
         {
             return;
         }
@@ -160,44 +169,48 @@ class ezxRegion
             "Teoma" , 
             "alexa" , 
             "froogle" , 
-            "Gigabot" , 
+            //"Gigabot" ,
             "inktomi" , 
             "looksmart" , 
-            "URL_Spider_SQL" , 
+            //"URL_Spider_SQL" ,
             "Firefly" , 
             "NationalDirectory" , 
             "Ask Jeeves" , 
             "TECNOSEEK" , 
             "InfoSeek" , 
-            "WebFindBot" , 
-            "girafabot" , 
+            //"WebFindBot" ,
+            //"girafabot" ,
             "crawler" , 
             "www.galaxy.com" , 
-            "Googlebot" , 
+            //"Googlebot" ,
             "Scooter" , 
             "Slurp" , 
-            "msnbot" , 
+            //"msnbot" ,
             "appie" , 
             "FAST" , 
             'Slurp' , 
-            'CazoodleBot' , 
-            'msnbot' , 
+            //'CazoodleBot' ,
+            //'msnbot' ,
             'InfoPath' , 
-            'Baiduspider' , 
+            //'Baiduspider' ,
             "WebBug" , 
             "Spade" , 
             "ZyBorg" , 
             "rabaz" , 
-            "Baiduspider" , 
+            //"Baiduspider" ,
             "Feedfetcher-Google" , 
             "TechnoratiSnoop" , 
-            "Rankivabot" , 
+            //"Rankivabot" ,
             "Mediapartners-Google" , 
-            "Sogou web spider" , 
-            "WebAlta Crawler" 
+            //"Sogou web spider" ,
+            //"WebAlta Crawler",
+            "bot" , 
+            "spider" , 
+            "search" , 
+            "linkidator" 
         );
         
-        if ( preg_match( "/" . join( '|', $bot_list ) . "/", $_SERVER['HTTP_USER_AGENT'] ) )
+        if ( preg_match( "/" . join( '|', $bot_list ) . "/i", $_SERVER['HTTP_USER_AGENT'] ) )
         {
             return true;
         }
