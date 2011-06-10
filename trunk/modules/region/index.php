@@ -105,7 +105,7 @@ if ( $selection !== false )
             {
                 eZSys::clearAccessPath();
             }
-            changeAccess( $accessNew );
+            eZSiteAccess::change( $accessNew );
 
             // Load the siteaccess extensions
             eZExtension::activateExtensions( 'access' );
@@ -164,33 +164,33 @@ if ( $selection and $redirect and $cookietest )
     {
         if ( !$found )
         {
-	    if ( !array_key_exists( $selection, $regions ) and array_key_exists( '*_*', $regions ) )
-	    {
-		            foreach( $accesslist as $access )
+            if ( !array_key_exists( $selection, $regions ) and array_key_exists( '*_*', $regions ) )
             {
-                if ( $access['name'] == $regions['*_*']['Siteaccess'] )
+                        foreach( $accesslist as $access )
                 {
-                    $access = changeAccess( $access );
-                    $GLOBALS['eZCurrentAccess'] =& $access;
-                    $found = true;
-                    break;
+                    if ( $access['name'] == $regions['*_*']['Siteaccess'] )
+                    {
+                        $access = changeAccess( $access );
+                        $GLOBALS['eZCurrentAccess'] =& $access;
+                        $found = true;
+                        break;
+                    }
+                }
+
+            }
+            else
+            {
+                foreach( $accesslist as $access )
+                {
+                    if ( $access['name'] == $regions[$selection]['Siteaccess'] )
+                    {
+                        $access = changeAccess( $access );
+                        $GLOBALS['eZCurrentAccess'] =& $access;
+                        $found = true;
+                        break;
+                    }
                 }
             }
-		
-            }
-else
-{
-            foreach( $accesslist as $access )
-            {
-                if ( $access['name'] == $regions[$selection]['Siteaccess'] )
-                {
-                    $access = changeAccess( $access );
-                    $GLOBALS['eZCurrentAccess'] =& $access;
-                    $found = true;
-                    break;
-                }
-            }
-}      
         }
 
         if ( ( $found and $oldaccess['name'] != $access['name'] ) or ( $found and !$url ) )
@@ -241,7 +241,7 @@ else
                 else
                 {
                     return eZHTTPTool::redirect( $accesspath . '/' . $url );
-                }            
+                }
         }
     }
 }
