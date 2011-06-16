@@ -1,10 +1,9 @@
 <?php
-include_once( 'kernel/common/template.php' );
 
-$module =& $Params['Module'];
+$module = $Params['Module'];
 $http = eZHTTPTool::instance();
 
-$tpl = templateInit();
+$tpl = eZTemplate::factory();
 
 $regionini = eZINI::instance( 'region.ini' );
 $contentini = eZINI::instance( "content.ini");
@@ -126,8 +125,8 @@ else
         if (  $access['name'] and $access['name'] == $url )
         {
             $url = false;
-            $access = changeAccess( $access );
-            $GLOBALS['eZCurrentAccess'] =& $access;
+            $access = eZSiteAccess::change( $access );
+            $GLOBALS['eZCurrentAccess'] = $access;
             $found = true;
             $selection = $access['name'];
             break;
@@ -164,33 +163,33 @@ if ( $selection and $redirect and $cookietest )
     {
         if ( !$found )
         {
-            if ( !array_key_exists( $selection, $regions ) and array_key_exists( '*_*', $regions ) )
+	    if ( !array_key_exists( $selection, $regions ) and array_key_exists( '*_*', $regions ) )
+	    {
+		            foreach( $accesslist as $access )
             {
-                        foreach( $accesslist as $access )
+                if ( $access['name'] == $regions['*_*']['Siteaccess'] )
                 {
-                    if ( $access['name'] == $regions['*_*']['Siteaccess'] )
-                    {
-                        $access = changeAccess( $access );
-                        $GLOBALS['eZCurrentAccess'] =& $access;
-                        $found = true;
-                        break;
-                    }
-                }
-
-            }
-            else
-            {
-                foreach( $accesslist as $access )
-                {
-                    if ( $access['name'] == $regions[$selection]['Siteaccess'] )
-                    {
-                        $access = changeAccess( $access );
-                        $GLOBALS['eZCurrentAccess'] =& $access;
-                        $found = true;
-                        break;
-                    }
+                    $access = eZSiteAccess::change( $access );
+                    $GLOBALS['eZCurrentAccess'] = $access;
+                    $found = true;
+                    break;
                 }
             }
+		
+            }
+else
+{
+            foreach( $accesslist as $access )
+            {
+                if ( $access['name'] == $regions[$selection]['Siteaccess'] )
+                {
+                    $access = eZSiteAccess::change( $access );
+                    $GLOBALS['eZCurrentAccess'] = $access;
+                    $found = true;
+                    break;
+                }
+            }
+}      
         }
 
         if ( ( $found and $oldaccess['name'] != $access['name'] ) or ( $found and !$url ) )
@@ -241,7 +240,7 @@ if ( $selection and $redirect and $cookietest )
                 else
                 {
                     return eZHTTPTool::redirect( $accesspath . '/' . $url );
-                }
+                }            
         }
     }
 }
