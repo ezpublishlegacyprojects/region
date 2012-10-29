@@ -32,8 +32,8 @@ $cookietest = true;
 if ( array_key_exists( 'COOKIETEST', $_GET ) and !array_key_exists( 'COOKIETEST', $_COOKIE ) )
 {
     $cookietest = false;
+	setcookie( "COOKIETEST", 1, time() - 3600*24*365 , '/' );
 }
-setcookie( "COOKIETEST", 1, time() - 3600*24*365 , '/' );
 
 $redirect = true;
 
