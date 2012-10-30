@@ -100,7 +100,7 @@ if ( $selection !== false )
             $accessNew = $GLOBALS['eZCurrentAccess'];
             $accessNew['name'] = $access['name'];
 
-            if ( $accessNew['type'] == EZ_ACCESS_TYPE_URI )
+            if ( $accessNew['type'] == eZSiteAccess::TYPE_URI )
             {
                 eZSys::clearAccessPath();
             }
