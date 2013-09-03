@@ -78,7 +78,7 @@ class ezxISO3166
         {
             if ( ezxISO3166::validip( trim( $ip ) ) )
             {
-                return $ip;
+                return trim( $ip );
             }
         }
         }
